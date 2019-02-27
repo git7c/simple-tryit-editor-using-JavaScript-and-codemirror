@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Tryit editor - Webtutorials.ME</title>
+<!--CODEMIRROR DEPENDENCIES-->
+<link rel="stylesheet" href="./codemirror/lib/codemirror.css" type="text/css" media="all">
+<link rel="stylesheet" href="./codemirror/addon/hint/show-hint.css" type="text/css" media="all">
+<link rel="stylesheet" href="./codemirror/addon/display/fullscreen.css" type="text/css" media="all">
+<script src="./codemirror/lib/codemirror.js"></script>
+<script src="./codemirror/mode/xml/xml.js"></script>
+<script src="./codemirror/mode/javascript/javascript.js"></script>
+<script src="./codemirror/mode/css/css.js"></script>
+<script src="./codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="./codemirror/addon/edit/matchbrackets.js"></script>
+<script src="./codemirror/addon/edit/matchtags.js"></script>
+<script src="./codemirror/addon/edit/closebrackets.js"></script>
+<script src="./codemirror/addon/edit/closetag.js"></script>
+<script src="./codemirror/addon/fold/xml-fold.js"></script>
+<script src="./codemirror/addon/hint/show-hint.js"></script>
+<script src="./codemirror/addon/hint/css-hint.js"></script>
+<script src="./codemirror/addon/hint/javascript-hint.js"></script>
+<script src="./codemirror/addon/hint/html-hint.js"></script>
+<script src="./codemirror/addon/hint/xml-hint.js"></script>
+<script src="./codemirror/addon/hint/anyword-hint.js"></script>
+<script src="./codemirror/addon/hint/sql-hint.js"></script>
+<script src="./codemirror/addon/display/fullscreen.js"></script>
+<script src="./codemirror/addon/selection/mark-selection.js"></script>
+<!--END OF CODEMIRROR DEPENDENCIES-->
+<style>
+*{
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 0;
+    background: #f2f2f2;
+    font-family: sans-serif;
+    padding: 50px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.container-wrapper {
+    display: flex;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+    border: 1px solid #cccccc;
+    padding: 10px;
+    background: #ffffff;
+}
+
+.container-wrapper div {
+    flex: 1;
+}
+
+.code-area {
+    width: 100%;
+    height: 400px;
+    resize: none;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    outline: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+.run-code-btn {
+    float: right;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: #333333;
+    border: 1px solid rgba(0, 0, 0, .1);
+    color: #ffffff;
+    outline: none;
+    transition: all .3s;
+}
+
+.run-code-btn:hover {
+    border-color: #333333;
+    color: #222222;
+    background: #ffffff;
+}
+
+.iframe_style {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #cccccc;
+}
+
+.CodeMirror {
+    border: 1px solid #cccccc;
+    width: 100%;
+    height: 400px;
+}
+
+.iframe-container {
+    padding-left: 10px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<div class="container-wrapper">
+<div class="code-containter">
+<select id="choose_language">
+    <option selected value="text/html">HTML</option>
+    <option value="text/xml">XML</option>
+    <option value="text/css">CSS</option>
+    <option value="text/javascript">JavaScript</option>
+</select>
+<button class="run-code-btn" id="run_btn">Run</button>
+<textarea name="code_area" class="code-area" id="code_area"></textarea>
+</div>
+<div class="iframe-container">
+<iframe class="iframe_style" id="iframe"></iframe>
+</div>
+</div>
+</div>
+<script>
+/* MAIN FUNCTION FOR RENDERING TEXTAREA CODE TO IFRAME */
+function run_code() {
+    var iframe = document.getElementById('iframe');
+    iframe = (iframe.contentWindow) ? iframe.contentWindow : (iframe.contentDocument) ? iframe.contentDocument.document : iframe.contentDocument;
+    iframe.document.open();
+    // GET CODEMIRROR TEXTAREA VALUE [ editor.getValue() ]
+    iframe.document.write(editor.getValue());
+    iframe.document.close();
+    return false;
+}
+//WHEN CLICKED RUN BUTTON
+document.getElementById('run_btn').addEventListener('click', function() {
+    run_code();
+});
+   
+// SET MODE DYNAMICALLY
+document.getElementById('choose_language').addEventListener('change',function(){
+    var select_language = document.getElementById('choose_language').value;
+    editor.setOption("mode", select_language);
+});
+
+// TO UNDERSTAND THIS CODE VISIT CODEMIRROR OFFICIAL WEBSITES   
+var editor = CodeMirror.fromTextArea(document.getElementById('code_area'), {
+    mode: 'text/html',
+    matchBrackets: true,
+    lineNumbers: true,
+    autoCloseTags: true,
+    autoCloseBrackets: true,
+    matchTags: {
+    bothTags: true
+    },
+    extraKeys: {
+        "Ctrl-J": "toMatchingTag"
+    },
+    lineWrapping: true,
+    styleSelectedText: true,
+    extraKeys: {
+        "Ctrl-Space": "autocomplete",
+        "Ctrl-F": function(cm) {
+            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+        },
+        "Esc": function(cm) {
+            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        }
+    }
+});
+</script>
+</body>
+
+</html>
